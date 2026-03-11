@@ -1,9 +1,1743 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Test Site</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swashikshan - Community Learning Ecosystem</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gradient-start: #1e3a8a;
+            --gradient-end: #7c3aed;
+            --accent: #8b5cf6;
+            --bg-soft: #f3f0ff;
+            --surface: #ffffff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #f43f5e;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-soft);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Gradient Utilities */
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-btn {
+            background: linear-gradient(90deg, #3b82f6 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        /* Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: var(--gradient-end);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        /* Main Container */
+        .main-container {
+            margin-top: 80px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2rem;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08);
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(124, 58, 237, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Daily Challenge Banner */
+        .challenge-banner {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .challenge-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .challenge-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .challenge-meta {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        /* Feed */
+        .feed-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .community-list {
+            list-style: none;
+        }
+
+        .community-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .community-item:hover, .community-item.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            color: var(--gradient-end);
+            font-weight: 600;
+        }
+
+        .community-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .post {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(124, 58, 237, 0.1);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .author-info h4 {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .author-info span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .post-tag {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            color: var(--gradient-end);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .post-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: var(--accent);
+        }
+
+        /* Right Sidebar */
+        .leaderboard {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .leaderboard-rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .rank-1 { background: gold; color: #333; }
+        .rank-2 { background: silver; color: #333; }
+        .rank-3 { background: #cd7f32; color: white; }
+        .rank-other { background: #f1f5f9; color: var(--text-secondary); }
+
+        /* Profile Section */
+        .profile-header {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            color: var(--gradient-end);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 800;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+
+        .profile-details h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .meta-item {
+            text-align: center;
+        }
+
+        .meta-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .meta-label {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Badges */
+        .badges-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .badge {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+            position: relative;
+        }
+
+        .badge.locked {
+            background: #e2e8f0;
+            color: #94a3b8;
+        }
+
+        /* Admin Panel Specific */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th, .data-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .data-table th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active { background: #d1fae5; color: #065f46; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-restricted { background: #fee2e2; color: #991b1b; }
+
+        .restriction-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        select, input {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+            transition: transform 0.2s;
+            z-index: 100;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .feed-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .profile-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 10px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--gradient-end);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+        }
+
+        /* Study Circles */
+        .circle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .circle-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08);
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .circle-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+
+        .circle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .circle-type {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .circle-members {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Restricted Notice */
+        .restriction-notice {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .restriction-notice i {
+            font-size: 1.25rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+    </style>
 </head>
 <body>
-<h1>Hello! My site is working 🚀</h1>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                SWASHIKSHAN
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a class="nav-link active" onclick="showView('home')"><i class="fas fa-home"></i> Home</a>
+                <a class="nav-link" onclick="showView('communities')"><i class="fas fa-users"></i> Communities</a>
+                <a class="nav-link" onclick="showView('challenges')"><i class="fas fa-trophy"></i> Challenges</a>
+                <a class="nav-link" onclick="showView('circles')"><i class="fas fa-circle-notch"></i> Study Circles</a>
+                <a class="nav-link" onclick="showView('admin')" id="adminLink" style="display:none"><i class="fas fa-shield-alt"></i> Admin</a>
+            </div>
+            <div class="user-menu">
+                <div style="text-align: right; margin-right: 1rem;">
+                    <div style="font-weight: 600; font-size: 0.9rem;" id="userName">Rahul Kumar</div>
+                    <div style="font-size: 0.75rem; opacity: 0.8;" id="userRole">Class 10 Student</div>
+                </div>
+                <div class="avatar" onclick="showView('profile')">RK</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+
+        <!-- HOME VIEW -->
+        <div id="home" class="view active">
+            <!-- Daily Challenge Banner -->
+            <div class="challenge-banner">
+                <div class="challenge-content">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <div class="challenge-title"><i class="fas fa-fire"></i> Daily Math Challenge</div>
+                            <div class="challenge-meta">Question 1 of 1 • Algebra • Class 10</div>
+                            <p style="margin: 1rem 0; font-size: 1.1rem;">If the sum of roots of the equation x² - 5x + 6 = 0 is equal to the product of roots, find the value of...</p>
+                            <button class="gradient-btn" style="margin-top: 0.5rem;" onclick="openChallenge()">
+                                Attempt Now <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div style="text-align: center; background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 12px;">
+                            <div style="font-size: 2rem; font-weight: 800;">12</div>
+                            <div style="font-size: 0.8rem;">Day Streak</div>
+                            <div style="margin-top: 0.5rem;"><i class="fas fa-fire" style="color: #fbbf24;"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feed-container">
+                <!-- Left Sidebar -->
+                <div class="sidebar">
+                    <div class="card">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">My Communities</h3>
+                        <ul class="community-list">
+                            <li class="community-item active">
+                                <div class="community-icon"><i class="fas fa-calculator"></i></div>
+                                <div>
+                                    <div style="font-weight: 600;">Mathematics</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Class 10</div>
+                                </div>
+                            </li>
+                            <li class="community-item">
+                                <div class="community-icon"><i class="fas fa-atom"></i></div>
+                                <div>
+                                    <div style="font-weight: 600;">Physics</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Class 10</div>
+                                </div>
+                            </li>
+                            <li class="community-item">
+                                <div class="community-icon"><i class="fas fa-flask"></i></div>
+                                <div>
+                                    <div style="font-weight: 600;">Chemistry</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Class 10</div>
+                                </div>
+                            </li>
+                            <li class="community-item">
+                                <div class="community-icon"><i class="fas fa-dna"></i></div>
+                                <div>
+                                    <div style="font-weight: 600;">Biology</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Class 10</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); color: white;">
+                        <h3 style="margin-bottom: 0.5rem;">Your Progress</h3>
+                        <div style="font-size: 2rem; font-weight: 800;">Level 3</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">Scholar</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 65%;"></div>
+                        </div>
+                        <div style="margin-top: 0.5rem; font-size: 0.8rem;">450 / 600 points to Level 4</div>
+                    </div>
+                </div>
+
+                <!-- Main Feed -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2 style="color: var(--text-primary);">Recent Discussions</h2>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="gradient-btn" style="padding: 8px 16px; font-size: 0.85rem;">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Post 1 -->
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-author">
+                                <div class="author-avatar">AP</div>
+                                <div class="author-info">
+                                    <h4>Ananya Patel</h4>
+                                    <span>Level 4 Mentor • 2 hours ago</span>
+                                </div>
+                            </div>
+                            <span class="post-tag">Mathematics</span>
+                        </div>
+                        <div class="post-content">
+                            <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">How to solve quadratic equations using factorization?</h3>
+                            <p>I'm having trouble understanding the factorization method for equations like x² - 7x + 12 = 0. Can someone explain the step-by-step process?</p>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn"><i class="fas fa-comment"></i> 8 Answers</button>
+                            <button class="action-btn"><i class="fas fa-heart"></i> 12 Likes</button>
+                            <button class="action-btn"><i class="fas fa-share"></i> Share</button>
+                            <button class="action-btn" style="color: var(--accent);"><i class="fas fa-check-circle"></i> Best Answer Selected</button>
+                        </div>
+                    </div>
+
+                    <!-- Post 2 -->
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-author">
+                                <div class="author-avatar" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">VK</div>
+                                <div class="author-info">
+                                    <h4>Vikram Singh</h4>
+                                    <span>Level 2 Learner • 4 hours ago</span>
+                                </div>
+                            </div>
+                            <span class="post-tag">Physics</span>
+                        </div>
+                        <div class="post-content">
+                            <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">Difference between speed and velocity</h3>
+                            <p>Can someone clarify the exact difference with a simple example? My notes say they're different but I don't understand why.</p>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn"><i class="fas fa-comment"></i> 5 Answers</button>
+                            <button class="action-btn"><i class="fas fa-heart"></i> 8 Likes</button>
+                            <button class="action-btn"><i class="fas fa-share"></i> Share</button>
+                        </div>
+                    </div>
+
+                    <!-- Post 3 -->
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-author">
+                                <div class="author-avatar" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">SM</div>
+                                <div class="author-info">
+                                    <h4>Sneha Mehta</h4>
+                                    <span>Level 5 Master • 6 hours ago</span>
+                                </div>
+                            </div>
+                            <span class="post-tag">Chemistry</span>
+                        </div>
+                        <div class="post-content">
+                            <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">Study Group: Organic Chemistry Weekend Session</h3>
+                            <p>Join me this Saturday at 4 PM for a deep dive into hydrocarbons. We'll solve previous year questions and discuss important concepts. Limited to 10 students!</p>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn"><i class="fas fa-user-plus"></i> 7 Joined</button>
+                            <button class="action-btn"><i class="fas fa-heart"></i> 24 Likes</button>
+                            <button class="action-btn"><i class="fas fa-share"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="sidebar">
+                    <div class="leaderboard">
+                        <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-trophy" style="color: #fbbf24;"></i>
+                            Weekly Leaders
+                        </h3>
+                        
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank rank-1">1</div>
+                            <div class="author-avatar" style="width: 35px; height: 35px; font-size: 0.8rem;">AR</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Aryan Reddy</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">1,250 pts</div>
+                            </div>
+                        </div>
+
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank rank-2">2</div>
+                            <div class="author-avatar" style="width: 35px; height: 35px; font-size: 0.8rem;">PK</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Priya Kumar</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">1,180 pts</div>
+                            </div>
+                        </div>
+
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank rank-3">3</div>
+                            <div class="author-avatar" style="width: 35px; height: 35px; font-size: 0.8rem;">RJ</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Rohan Joshi</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">1,050 pts</div>
+                            </div>
+                        </div>
+
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank rank-other">4</div>
+                            <div class="author-avatar" style="width: 35px; height: 35px; font-size: 0.8rem;">DK</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Divya Kapoor</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">980 pts</div>
+                            </div>
+                        </div>
+
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank rank-other">5</div>
+                            <div class="author-avatar" style="width: 35px; height: 35px; font-size: 0.8rem;">NM</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Nikhil Malhotra</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">920 pts</div>
+                            </div>
+                        </div>
+
+                        <button class="gradient-btn" style="width: 100%; margin-top: 1rem; padding: 10px;">
+                            View Full Leaderboard
+                        </button>
+                    </div>
+
+                    <div class="card" style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem;">Active Study Circles</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="padding: 1rem; background: rgba(139, 92, 246, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+                                <div style="font-weight: 600;">JEE Physics Prep</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">12 members active</div>
+                            </div>
+                            <div style="padding: 1rem; background: rgba(139, 92, 246, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+                                <div style="font-weight: 600;">Class 10 Math Circle</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">8 members active</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE VIEW -->
+        <div id="profile" class="view">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="profile-avatar">RK</div>
+                    <div class="profile-details">
+                        <h1>Rahul Kumar</h1>
+                        <div style="opacity: 0.9;">Class 10 • Delhi Public School</div>
+                        <span class="level-badge">Level 3 Scholar</span>
+                        
+                        <div class="profile-meta">
+                            <div class="meta-item">
+                                <div class="meta-value">450</div>
+                                <div class="meta-label">Points</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-value">12</div>
+                                <div class="meta-label">Day Streak</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-value">28</div>
+                                <div class="meta-label">Questions</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-value">45</div>
+                                <div class="meta-label">Answers</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-container" style="max-width: 400px; margin-top: 1.5rem;">
+                            <div class="progress-bar" style="width: 75%;"></div>
+                        </div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem;">150 points to reach Level 4 (Mentor)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('badges')">Badges</button>
+                <button class="tab" onclick="switchTab('activity')">Activity</button>
+                <button class="tab" onclick="switchTab('communities')">Communities</button>
+                <button class="tab" onclick="switchTab('settings')">Settings</button>
+            </div>
+
+            <div id="badges-tab" class="tab-content">
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">Earned Badges</h3>
+                    <div class="badges-container">
+                        <div class="badge" title="First Answer"><i class="fas fa-check"></i></div>
+                        <div class="badge" title="7 Day Streak"><i class="fas fa-fire"></i></div>
+                        <div class="badge" title="Helpful Mentor"><i class="fas fa-hands-helping"></i></div>
+                        <div class="badge" title="Problem Solver"><i class="fas fa-brain"></i></div>
+                        <div class="badge locked" title="Master Contributor"><i class="fas fa-crown"></i></div>
+                        <div class="badge locked" title="Community Leader"><i class="fas fa-users"></i></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">Achievements</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                            <i class="fas fa-trophy" style="color: var(--success); font-size: 1.5rem;"></i>
+                            <div>
+                                <div style="font-weight: 600;">Weekly Champion</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">Ranked #1 in Math Marathon - Week 12</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 8px;">
+                            <i class="fas fa-star" style="color: var(--accent); font-size: 1.5rem;"></i>
+                            <div>
+                                <div style="font-weight: 600;">Rising Star</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">Reached Level 3 in record time</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div id="admin" class="view">
+            <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">
+                <i class="fas fa-shield-alt" style="color: var(--accent);"></i> 
+                Admin Control Panel
+            </h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">48</div>
+                    <div class="stat-label">Active Teachers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">Posts Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">23</div>
+                    <div class="stat-label">Pending Approvals</div>
+                </div>
+            </div>
+
+            <div class="admin-grid">
+                <!-- Teacher Management -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Teacher Management</h3>
+                        <button class="gradient-btn" style="padding: 8px 16px; font-size: 0.85rem;">
+                            <i class="fas fa-plus"></i> Add Teacher
+                        </button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="author-avatar" style="width: 30px; height: 30px; font-size: 0.7rem;">RS</div>
+                                        <div> Rajesh Sharma</div>
+                                    </div>
+                                </td>
+                                <td>Mathematics</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <button style="background: none; border: none; color: var(--text-secondary); cursor: pointer;">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="author-avatar" style="width: 30px; height: 30px; font-size: 0.7rem;">PV</div>
+                                        <div>Priya Verma</div>
+                                    </div>
+                                </td>
+                                <td>Physics</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <button style="background: none; border: none; color: var(--text-secondary); cursor: pointer;">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="author-avatar" style="width: 30px; height: 30px; font-size: 0.7rem;">AG</div>
+                                        <div>Amit Gupta</div>
+                                    </div>
+                                </td>
+                                <td>Chemistry</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>
+                                    <button style="background: none; border: none; color: var(--text-secondary); cursor: pointer;">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Student Restrictions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Student Restrictions</h3>
+                    </div>
+                    
+                    <div class="restriction-controls">
+                        <div class="control-group">
+                            <label>Select Student</label>
+                            <select id="studentSelect">
+                                <option>Choose student...</option>
+                                <option>Rahul Kumar (Class 10)</option>
+                                <option>Ananya Patel (Class 9)</option>
+                                <option>Vikram Singh (Class 11)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Restriction Type</label>
+                            <select id="restrictionType">
+                                <option value="">Select type...</option>
+                                <option value="shadow">Shadow Ban (Hidden Posts)</option>
+                                <option value="comment">Comment Freeze</option>
+                                <option value="readonly">Read-Only Mode</option>
+                                <option value="profile">Profile Hidden</option>
+                                <option value="ban">Community Ban</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Duration</label>
+                            <select>
+                                <option>1 Day</option>
+                                <option>3 Days</option>
+                                <option>7 Days</option>
+                                <option>30 Days</option>
+                                <option>Permanent</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Reason</label>
+                            <select>
+                                <option>Community Guideline #1: Respect</option>
+                                <option>Community Guideline #2: No Spam</option>
+                                <option>Community Guideline #3: Academic Integrity</option>
+                                <option>Custom Reason...</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="gradient-btn" style="width: 100%; margin-top: 1rem;" onclick="applyRestriction()">
+                        Apply Restriction
+                    </button>
+
+                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.05);">
+                        <h4 style="margin-bottom: 0.75rem; font-size: 0.9rem;">Recently Restricted</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #fee2e2; border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div class="author-avatar" style="width: 32px; height: 32px; font-size: 0.7rem; background: var(--danger);">VS</div>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 0.9rem;">Vikram Singh</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-secondary);">Comment Freeze • 2 days remaining</div>
+                                    </div>
+                                </div>
+                                <button style="background: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; color: var(--danger); font-weight: 600;">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Moderation -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Content Moderation Queue</h3>
+                        <span style="background: var(--danger); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">5 Pending</span>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-weight: 600;">Post by Rahul Kumar</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">10 mins ago</span>
+                            </div>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">"Can someone share the answers to today's test?"</p>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="gradient-btn" style="padding: 6px 12px; font-size: 0.8rem;">Approve</button>
+                                <button style="padding: 6px 12px; font-size: 0.8rem; border: 1px solid var(--danger); color: var(--danger); background: white; border-radius: 6px; cursor: pointer;">Remove</button>
+                                <button style="padding: 6px 12px; font-size: 0.8rem; border: 1px solid var(--text-secondary); color: var(--text-secondary); background: white; border-radius: 6px; cursor: pointer;">Warn User</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">System Configuration</h3>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(139, 92, 246, 0.05); border-radius: 8px;">
+                            <div>
+                                <div style="font-weight: 600;">AI Assistant</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Google Gemini Integration</div>
+                            </div>
+                            <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--accent); border-radius: 24px; transition: .4s;"></span>
+                            </label>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(139, 92, 246, 0.05); border-radius: 8px;">
+                            <div>
+                                <div style="font-weight: 600;">Auto-Moderation</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Filter inappropriate content</div>
+                            </div>
+                            <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--accent); border-radius: 24px; transition: .4s;"></span>
+                            </label>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(139, 92, 246, 0.05); border-radius: 8px;">
+                            <div>
+                                <div style="font-weight: 600;">Teacher Approval Required</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">For Level 1-2 students</div>
+                            </div>
+                            <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--accent); border-radius: 24px; transition: .4s;"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STUDY CIRCLES VIEW -->
+        <div id="circles" class="view">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <h2 style="color: var(--text-primary);">Study Circles</h2>
+                    <p style="color: var(--text-secondary);">Collaborative learning groups moderated by teachers</p>
+                </div>
+                <button class="gradient-btn" onclick="createCircle()">
+                    <i class="fas fa-plus"></i> Create Circle
+                </button>
+            </div>
+
+            <div class="circle-grid">
+                <div class="circle-card">
+                    <div class="circle-header">
+                        <span class="circle-type">Teacher-Led</span>
+                        <div class="circle-members">
+                            <i class="fas fa-user"></i> 12/20
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 0.5rem;">JEE Physics Prep 2024</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Advanced problem solving for JEE Main & Advanced. Focus on mechanics and electromagnetism.</p>
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div class="author-avatar" style="width: 28px; height: 28px; font-size: 0.7rem;">RS</div>
+                        <span style="font-size: 0.85rem;">Led by Rajesh Sharma</span>
+                    </div>
+                    <button class="gradient-btn" style="width: 100%;">Join Circle</button>
+                </div>
+
+                <div class="circle-card">
+                    <div class="circle-header">
+                        <span class="circle-type">Peer Study</span>
+                        <div class="circle-members">
+                            <i class="fas fa-user"></i> 8/15
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 0.5rem;">Class 10 Math Circle</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Weekly practice sessions for board exam preparation. All topics covered.</p>
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div class="author-avatar" style="width: 28px; height: 28px; font-size: 0.7rem;">AP</div>
+                        <span style="font-size: 0.85rem;">Led by Ananya Patel (L4)</span>
+                    </div>
+                    <button class="gradient-btn" style="width: 100%;">Join Circle</button>
+                </div>
+
+                <div class="circle-card">
+                    <div class="circle-header">
+                        <span class="circle-type">Exam Prep</span>
+                        <div class="circle-members">
+                            <i class="fas fa-user"></i> 24/30
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 0.5rem;">NEET Biology Crash Course</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Intensive revision for NEET 2024. Daily quizzes and doubt sessions.</p>
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div class="author-avatar" style="width: 28px; height: 28px; font-size: 0.7rem;">SD</div>
+                        <span style="font-size: 0.85rem;">Led by Dr. Sharma</span>
+                    </div>
+                    <button class="gradient-btn" style="width: 100%; background: #e2e8f0; color: var(--text-secondary); cursor: not-allowed;">Full</button>
+                </div>
+
+                <div class="circle-card" style="border: 2px dashed var(--accent); background: rgba(139, 92, 246, 0.02);">
+                    <div class="empty-state" style="padding: 2rem;">
+                        <i class="fas fa-plus-circle" style="color: var(--accent);"></i>
+                        <h3>Create New Circle</h3>
+                        <p>Start a study group for your class or subject</p>
+                        <button class="gradient-btn" style="margin-top: 1rem;">Get Started</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHALLENGES VIEW -->
+        <div id="challenges" class="view">
+            <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">Daily Challenges & Competitions</h2>
+            
+            <div class="challenge-banner" style="margin-bottom: 2rem;">
+                <div class="challenge-content">
+                    <div class="challenge-title"><i class="fas fa-calendar-day"></i> Today's Challenge</div>
+                    <div style="font-size: 1.2rem; margin: 1rem 0;">Mathematics • Algebra</div>
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;">Solve: If α and β are roots of x² - 6x + 8 = 0, find the value of α² + β²</p>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="gradient-btn" style="background: white; color: var(--gradient-end);">
+                            Submit Answer
+                        </button>
+                        <button style="padding: 12px 24px; border: 2px solid white; background: transparent; color: white; border-radius: 8px; cursor: pointer;">
+                            View Hint
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">15</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">42</div>
+                    <div class="stat-label">Challenges Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Accuracy Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">#3</div>
+                    <div class="stat-label">Weekly Rank</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Weekly Competition: Math Marathon</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Top 3 students win exclusive badges and certificates</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: linear-gradient(90deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%); border-radius: 8px; border-left: 4px solid #fbbf24;">
+                        <div class="leaderboard-rank rank-1">1</div>
+                        <div class="author-avatar" style="width: 40px; height: 40px;">AR</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700;">Aryan Reddy</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">450 points this week</div>
+                        </div>
+                        <i class="fas fa-crown" style="color: #fbbf24; font-size: 1.5rem;"></i>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(148, 163, 184, 0.1); border-radius: 8px; border-left: 4px solid #94a3b8;">
+                        <div class="leaderboard-rank rank-2">2</div>
+                        <div class="author-avatar" style="width: 40px; height: 40px;">PK</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700;">Priya Kumar</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">420 points this week</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(205, 127, 50, 0.1); border-radius: 8px; border-left: 4px solid #cd7f32;">
+                        <div class="leaderboard-rank rank-3">3</div>
+                        <div class="author-avatar" style="width: 40px; height: 40px;">RJ</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700;">Rohan Joshi</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">380 points this week</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMMUNITIES VIEW -->
+        <div id="communities" class="view">
+            <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">Learning Communities</h2>
+            
+            <div class="circle-grid">
+                <div class="circle-card">
+                    <div class="circle-header">
+                        <span class="circle-type">Active</span>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem;">
+                            <i class="fas fa-users"></i> 245 members
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="community-icon" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="fas fa-calculator"></i></div>
+                        <div>
+                            <h3>Mathematics</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary);">Classes 9-12</p>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Algebra, Geometry, Calculus, and more. Get help with problems and concepts.</p>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <span style="background: rgba(139, 92, 246, 0.1); color: var(--accent); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">12 new posts</span>
+                        <span style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">5 online</span>
+                    </div>
+                    <button class="gradient-btn" style="width: 100%;">Enter Community</button>
+                </div>
+
+                <div class="circle-card">
+                    <div class="circle-header">
+                        <span class="circle-type">Active</span>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem;">
+                            <i class="fas fa-users"></i> 189 members
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="community-icon" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="fas fa-atom"></i></div>
+                        <div>
+                            <h3>Physics</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary);">Classes 9-12</p>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Mechanics, Thermodynamics, Electromagnetism, Modern Physics.</p>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <span style="background: rgba(139, 92, 246, 0.1); color: var(--accent); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">8 new posts</span>
+                        <span style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">3 online</span>
+                    </div>
+                    <button class="gradient-btn" style="width: 100%;">Enter Community</button>
+                </div>
+
+                <div class="circle-card">
+                    <div class="circle-header">
+                        <span class="circle-type">Active</span>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem;">
+                            <i class="fas fa-users"></i> 156 members
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="community-icon" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="fas fa-flask"></i></div>
+                        <div>
+                            <h3>Chemistry</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary);">Classes 9-12</p>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Organic, Inorganic, and Physical Chemistry discussions.</p>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <span style="background: rgba(139, 92, 246, 0.1); color: var(--accent); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">5 new posts</span>
+                        <span style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">2 online</span>
+                    </div>
+                    <button class="gradient-btn" style="width: 100%;">Enter Community</button>
+                </div>
+
+                <div class="circle-card">
+                    <div class="circle-header">
+                        <span class="circle-type">Active</span>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem;">
+                            <i class="fas fa-users"></i> 134 members
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="community-icon" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="fas fa-dna"></i></div>
+                        <div>
+                            <h3>Biology</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary);">Classes 9-12</p>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Zoology, Botany, Human Physiology, and Ecology.</p>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <span style="background: rgba(139, 92, 246, 0.1); color: var(--accent); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">3 new posts</span>
+                        <span style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">4 online</span>
+                    </div>
+                    <button class="gradient-btn" style="width: 100%;">Enter Community</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="openModal('askDoubtModal')">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Ask Doubt Modal -->
+    <div id="askDoubtModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ask a Question</h2>
+                <button class="close-btn" onclick="closeModal('askDoubtModal')">&times;</button>
+            </div>
+            
+            <div class="control-group" style="margin-bottom: 1rem;">
+                <label>Select Community</label>
+                <select style="width: 100%;">
+                    <option>Mathematics - Class 10</option>
+                    <option>Physics - Class 10</option>
+                    <option>Chemistry - Class 10</option>
+                    <option>Biology - Class 10</option>
+                </select>
+            </div>
+            
+            <div class="control-group" style="margin-bottom: 1rem;">
+                <label>Your Question</label>
+                <textarea style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; min-height: 120px; font-family: inherit;" placeholder="Describe your doubt in detail..."></textarea>
+            </div>
+            
+            <div class="control-group" style="margin-bottom: 1.5rem;">
+                <label>Attach Image (Optional)</label>
+                <input type="file" style="width: 100%; padding: 0.5rem;">
+            </div>
+            
+            <button class="gradient-btn" style="width: 100%;" onclick="submitQuestion()">
+                Post Question
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // View Navigation
+        function showView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Show selected view
+            document.getElementById(viewName).classList.add('active');
+            
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Here you would show/hide tab content
+            console.log('Switched to tab:', tabName);
+        }
+
+        // Modal Controls
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Admin Functions
+        function applyRestriction() {
+            const student = document.getElementById('studentSelect').value;
+            const type = document.getElementById('restrictionType').value;
+            
+            if (student === 'Choose student...' || type === '') {
+                alert('Please select both student and restriction type');
+                return;
+            }
+            
+            alert(`Restriction applied to ${student}: ${type}`);
+        }
+
+        function submitQuestion() {
+            alert('Question submitted! It will be visible after teacher approval.');
+            closeModal('askDoubtModal');
+        }
+
+        function createCircle() {
+            alert('Create Circle functionality - Only Level 3+ students and Teachers can create circles');
+        }
+
+        function openChallenge() {
+            alert('Opening daily challenge...');
+        }
+
+        // Simulate role switching for demo
+        document.addEventListener('keydown', function(e) {
+            // Press 'A' to toggle Admin view
+            if (e.key === 'a' && e.ctrlKey) {
+                e.preventDefault();
+                const adminLink = document.getElementById('adminLink');
+                if (adminLink.style.display === 'none') {
+                    adminLink.style.display = 'block';
+                    document.getElementById('userRole').textContent = 'Platform Admin';
+                    alert('Admin mode activated! Click on Admin in navigation.');
+                } else {
+                    adminLink.style.display = 'none';
+                    document.getElementById('userRole').textContent = 'Class 10 Student';
+                }
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Swashikshan App Loaded');
+            console.log('Press Ctrl+A to toggle Admin mode');
+        });
+    </script>
 </body>
 </html>
